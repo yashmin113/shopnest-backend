@@ -5,6 +5,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 
+import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import productsRoutes from "./routes/productsRoutes.js";
 import orderRoutes from "./routes/orderRoute.js";
@@ -85,5 +86,9 @@ app.use("/api/admin", adminRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
+
+if (process.env.VERCEL) {
+  await connectDB();
+}
 
 export default app;
