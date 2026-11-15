@@ -1,9 +1,10 @@
 import { mkdirSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import multer from "multer";
 import { HttpError } from "../utils/errors.js";
 
-const uploadDirectory = fileURLToPath(new URL("../uploads/", import.meta.url));
+const uploadDirectory = path.join(tmpdir(), "shopnest-uploads");
 
 mkdirSync(uploadDirectory, { recursive: true });
 
