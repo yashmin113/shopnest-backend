@@ -28,6 +28,22 @@ const allowedOrigins = (
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+const isShopNestVercelOrigin = (origin) => {
+  try {
+    const { hostname, protocol } = new URL(origin);
+
+    return (
+      protocol === "https:" &&
+      (hostname === "shopnest-frontend-pnt2.vercel.app" ||
+        /^shopnest-frontend-pnt2-[a-z0-9-]+-yashmin\.vercel\.app$/i.test(
+          hostname
+        ))
+    );
+  } catch {
+    return false;
+  }
+};
+
 app.use(helmet());
 
 if (process.env.NODE_ENV !== "test") {
@@ -37,7 +53,11 @@ if (process.env.NODE_ENV !== "test") {
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        isShopNestVercelOrigin(origin)
+      ) {
         return callback(null, true);
       }
 

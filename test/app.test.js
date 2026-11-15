@@ -18,6 +18,24 @@ test("GET /api/health returns ok", async () => {
   assert.equal(response.body.status, "ok");
 });
 
+test("CORS allows ShopNest Vercel deployment origins", async () => {
+  const origin =
+    "https://shopnest-frontend-pnt2-rs3l6b66s-yashmin.vercel.app";
+  const response = await request(app).get("/api/health").set("Origin", origin);
+
+  assert.equal(response.status, 200);
+  assert.equal(response.headers["access-control-allow-origin"], origin);
+});
+
+test("CORS rejects unrelated Vercel origins", async () => {
+  const response = await request(app)
+    .get("/api/health")
+    .set("Origin", "https://unrelated-project.vercel.app");
+
+  assert.equal(response.status, 403);
+  assert.equal(response.body.message, "Not allowed by CORS");
+});
+
 test("unknown routes return a JSON 404", async () => {
   const response = await request(app).get("/api/does-not-exist");
 
